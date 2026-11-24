@@ -1,124 +1,226 @@
 # ✦ ResearchPilot — AI-Powered PDF Research Assistant
 
-A Retrieval-Augmented Generation (RAG) application that lets you upload multiple PDFs, ask questions, compare documents, and receive grounded answers with document/page citations.
+**Turn your PDFs into an interactive research workspace.**
 
-## Features
+ResearchPilot is an AI-powered document intelligence application built using Python, Streamlit, and Google's Gemini API. It uses Retrieval-Augmented Generation (RAG) to retrieve relevant passages from uploaded PDF documents and generate answers grounded in the supplied evidence.
 
-- Multi-PDF upload and text extraction with PyMuPDF
-- Gemini Embedding 2 vector embeddings
-- Semantic retrieval using cosine similarity and NumPy
-- Grounded answers powered by Gemini 3.8 Flash
-- Inline document/page citations and expandable source excerpts
-- Cross-document comparison
-- Conversation export to Markdown
-- Retrieval inspection with cosine similarity scores
-- Session-based workspace; no database or infrastructure setup required
+🔗 **Live Demo:** https://researchpilot-saurabh.streamlit.app  
+📂 **GitHub Repository:** https://github.com/saurabhsharma31-pixel/ResearchPilot
 
-## Tech stack
+---
 
-Python · Streamlit · Google Gemini API (`google-genai`) · Gemini Embedding 2 · NumPy · PyMuPDF
+## 🚀 Features
 
-## 1. Requirements
+### 💬 1. Ask Documents
+- Upload and query multiple PDF documents.
+- Ask natural-language questions about document content.
+- Generate evidence-grounded answers using Gemini.
+- View supporting document names, page numbers, and source excerpts.
+- Export conversations as Markdown.
 
+### 📚 2. Document Library
+- Upload multiple PDF files.
+- Extract text page by page using PyMuPDF.
+- Create section-aware text chunks.
+- Generate vector embeddings for semantic retrieval.
+- View indexed documents and searchable chunks.
+
+### ⚖️ 3. Compare PDFs
+- Select multiple documents for comparison.
+- Compare findings, evidence, and recommendations.
+- Generate document-specific insights.
+- Inspect the evidence used in comparison answers.
+
+### 📊 4. RAG Evaluation Dashboard
+- Test retrieval using custom questions.
+- Inspect retrieved passages and their ranking.
+- View semantic similarity, keyword relevance, and hybrid ranking scores.
+- Label retrieved passages as relevant or irrelevant.
+- Calculate human-labelled Precision@K and Mean Reciprocal Rank (MRR).
+- Generate answers from retrieved evidence.
+- Evaluate answer relevance, faithfulness, completeness, citation support, and overall quality using an AI-assisted evaluator.
+
+---
+
+## 🧠 How It Works
+
+ResearchPilot follows a Retrieval-Augmented Generation pipeline:
+
+1. **PDF Extraction:** PyMuPDF extracts text from uploaded PDFs while retaining page-level metadata.
+2. **Intelligent Chunking:** Documents are divided into section-aware text chunks.
+3. **Vector Embeddings:** Gemini Embedding 2 converts document passages into 768-dimensional vector representations.
+4. **Hybrid Retrieval:** Semantic similarity and keyword matching are combined to rank relevant passages.
+5. **Context Diversification:** Near-duplicate passages are filtered and retrieval results are diversified.
+6. **Answer Generation:** Gemini 3.1 Flash-Lite generates answers using retrieved document evidence.
+7. **Source Attribution:** Supporting document names, page numbers, and excerpts are displayed.
+8. **Evaluation:** Retrieval and generated-answer quality can be inspected using the evaluation dashboard.
+
+---
+
+## 🛠️ Technology Stack
+
+| Category | Technologies |
+|---|---|
+| Programming Language | Python |
+| Frontend / UI | Streamlit |
+| LLM | Google Gemini 3.1 Flash-Lite |
+| Embedding Model | Gemini Embedding 2 |
+| RAG | Retrieval-Augmented Generation |
+| Vector Operations | NumPy |
+| PDF Processing | PyMuPDF |
+| API Integration | Google GenAI SDK |
+| Testing | Pytest |
+| Deployment | Streamlit Community Cloud |
+| Version Control | Git and GitHub |
+
+---
+
+## ⚙️ Installation and Setup
+
+### Prerequisites
 - Python 3.10 or newer
-- A Google Gemini API key from [Google AI Studio](https://aistudio.google.com/apikey)
-- Internet connection for Gemini API calls
+- Google Gemini API key
+- Git
 
-## 2. Run locally (Windows)
+### 1. Clone the repository
 
-Open the project folder in VS Code.
+```bash
+git clone https://github.com/saurabhsharma31-pixel/ResearchPilot.git
+cd ResearchPilot
+```
 
-```powershell
+### 2. Create a virtual environment
+
+**Windows:**
+
+```bash
 py -m venv .venv
 .venv\Scripts\activate
-pip install -r requirements.txt
-copy .env.example .env
 ```
 
-Open `.env`, replace the placeholder with your key:
+**macOS / Linux:**
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure your Gemini API key
+
+Create a `.env` file in the project root:
 
 ```env
-GEMINI_API_KEY=your_actual_key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
-Run:
+Alternatively, enter the key in the application sidebar.
 
-```powershell
+Get your API key from [Google AI Studio](https://aistudio.google.com/).
+
+**Security:** Never commit your real `.env` file or expose your API key publicly.
+
+### 5. Run the application
+
+```bash
 python -m streamlit run app.py
 ```
 
-The app opens at `http://localhost:8501`.
+Open:
 
-You can alternatively paste the API key into the password field in the sidebar. That key is held only in the current Streamlit session.
-
-## 3. Push to GitHub
-
-**Never upload your real `.env` file or expose your API key.** `.gitignore` already excludes it.
-
-```bash
-git init
-git add .
-git commit -m "Build ResearchPilot AI PDF Research Assistant"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/ResearchPilot.git
-git push -u origin main
+```text
+http://localhost:8501
 ```
 
-## 4. Deploy free on Streamlit Community Cloud
+---
 
-1. Push this repository to GitHub.
-2. Open [Streamlit Community Cloud](https://share.streamlit.io/).
-3. Create an app and select this repository, branch `main`, and file `app.py`.
-4. Open **App settings → Secrets** and add:
-
-```toml
-GEMINI_API_KEY = "your_actual_key"
-```
-
-5. Deploy. The app reads the key from Streamlit secrets or the `GEMINI_API_KEY` environment variable.
-
-Gemini API usage may be subject to Google's quotas, rate limits, and billing terms. Free availability is not guaranteed for every model or account.
-
-## How it works
-
-1. **Extract:** PyMuPDF extracts selectable text page by page.
-2. **Chunk:** Text is divided into overlapping chunks while retaining document and page metadata.
-3. **Embed:** Gemini Embedding 2 converts chunks into vector representations.
-4. **Retrieve:** A question is embedded and compared with stored vectors using cosine similarity.
-5. **Generate:** The most relevant excerpts are passed to Gemini 3.8 Flash with instructions to answer only from supplied evidence.
-6. **Cite:** The interface displays source document names and page numbers alongside the answer.
-
-## Important notes
-
-- The app processes text-based PDFs. Scanned image PDFs require OCR; OCR is intentionally not included to keep installation simple.
-- Documents and embeddings live in Streamlit session memory. Refreshing/restarting the app or starting a new session may require uploading and processing the PDFs again.
-- This starter deployment is intended for personal/demo use. It does not include user accounts, persistent storage, or production-grade multi-user isolation.
-- AI answers can be incorrect. Check important statements against the cited PDF pages.
-- Keep your API key private and monitor usage in Google AI Studio.
-
-## Project structure
+## 📁 Project Structure
 
 ```text
 ResearchPilot/
+│
 ├── app.py
 ├── requirements.txt
+├── README.md
 ├── .env.example
 ├── .gitignore
-├── README.md
+├── pytest.ini
+│
+├── .streamlit/
+│   └── config.toml
+│
 ├── src/
 │   ├── __init__.py
 │   ├── pdf_engine.py
 │   ├── rag_engine.py
-│   └── utils.py
+│   ├── utils.py
+│   └── test_gemini.py
+│
 └── tests/
     └── test_pdf_engine.py
 ```
 
-## Resume description
+---
 
-**AI-Powered PDF Research Assistant (ResearchPilot)**
-- Built a multi-document RAG application using Python, Streamlit, Gemini API, and Gemini Embedding 2 to answer natural-language questions over PDF collections.
-- Implemented page-aware PDF extraction, overlapping text chunking, vector embeddings, and cosine-similarity retrieval.
-- Integrated Gemini-powered grounded responses with source citations, cross-document comparison, and retrieval-quality inspection.
+## 📈 RAG Evaluation Methodology
 
-Only add performance metrics after measuring them on a documented evaluation set.
+ResearchPilot includes an interactive evaluation workflow.
+
+**Retrieval metrics:**
+- Precision@K: Measures the proportion of retrieved passages manually labelled relevant.
+- MRR: Measures how highly the first relevant passage is ranked.
+
+**Answer-quality dimensions:**
+- Relevance
+- Evidence faithfulness
+- Completeness
+- Citation support
+- Overall answer quality
+
+The answer evaluator uses an LLM-as-a-judge approach. Its scores are AI-assisted assessments, not independent ground truth.
+
+---
+
+## ⚠️ Limitations
+
+- The current PDF extraction pipeline supports text-based PDFs; scanned-image OCR is not included.
+- Uploaded documents, embeddings, and conversation history are maintained in Streamlit session state rather than a persistent database.
+- Refreshing or restarting a session may require uploading and processing documents again.
+- Gemini API usage is subject to model availability, quotas, and rate limits.
+- AI-generated answers should be verified against their cited source documents.
+
+---
+
+## 🔮 Future Improvements
+
+- Persistent conversation history and searchable chat archives.
+- Delete individual recent searches and conversations.
+- OCR support for scanned PDF documents.
+- Persistent vector storage.
+- User authentication and multi-user workspaces.
+- Advanced retrieval evaluation using benchmark datasets.
+- Improved document parsing and retrieval optimization.
+
+---
+
+## 👨‍💻 Author
+
+**Saurabh Sharma**
+
+B.Tech — Computer Science (Data Science)
+
+Interested in Artificial Intelligence, Machine Learning, Generative AI, and Data Science.
+
+- GitHub: https://github.com/saurabhsharma31-pixel
+- LinkedIn: https://www.linkedin.com/in/saurabh-sharma-5a94321ba/
+
+---
+
+⭐ If you find ResearchPilot useful, consider giving this repository a star.
+
+**Built with Python, Gemini, RAG, and Streamlit.**
